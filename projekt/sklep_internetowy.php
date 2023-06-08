@@ -64,7 +64,7 @@ session_start();
         echo "<ul>";
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                echo '<a href="sklep_produkt.php?id=' . $row['id'] . '" target="_blank">' . $row["nazwa"] . '</a> ' . $row["cena"] . 'zł<br>';
+                echo '<a href="sklep_produkt.php?id=' . $row['id_produkt'] . '">' . $row["nazwa"] . '</a> ' . $row["cena"] . 'zł<br>';
             }
         } else echo "0 results";
         echo "</ul>";
