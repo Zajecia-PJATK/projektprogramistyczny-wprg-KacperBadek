@@ -51,8 +51,8 @@ if (isset($_POST['register'])) {
         $db->close();
     }
 }
-
-
 ?>
+
+Masz już konto? <a href="logowanie.php">Zaloguj się</a>
 </body>
 </html>
