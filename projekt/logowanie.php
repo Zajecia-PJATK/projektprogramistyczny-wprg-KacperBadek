@@ -28,26 +28,33 @@ if (isset($_POST['login'])) {
     else if (empty($haslo)) echo "<br>Hasło nie może być puste!";
 
     else {
-        $db = new mysqli('localhost', 'root', '', 'sklep');
-        if ($db->connect_errno) {
-            die("Błąd połączenia z bazą danych!");
-        }
-        $query = "SELECT `hash_haslo`, `id_uzytkownik` FROM `uzytkownicy` WHERE `email` = '$email'";
-        $result = $db->query($query);
+        try {
+            $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
+            $query = "SELECT hash_haslo, id_uzytkownik FROM uzytkownicy WHERE email = :email";
+
+            $result = $db->prepare($query);
+            $result->bindParam(':email', $email);
+            $result->execute();
+
+            if ($result->rowCount() > 0) {
+                $row = $result->fetch(PDO::FETCH_ASSOC);
                 if (password_verify($haslo, $row['hash_haslo'])) {
-
                     $_SESSION['loggedIn'] = true;
                     $_SESSION['userId'] = $row['id_uzytkownik'];
+                    $db = null;
                     header('Location: sklep_internetowy.php');
-
-                } else echo "Błędny login lub hasło!";
+                } else {
+                    echo "<br>Błędny login lub hasło!";
+                }
+            } else {
+                echo "<br>Konto nie istnieje!";
             }
-        } else echo "Konto nie istnieje!";
-        $db->close();
-
+            $db = null;
+        } catch (PDOException $e) {
+            die("Błąd połączenia z bazą danych: " . $e->getMessage());
+        }
     }
 }
 

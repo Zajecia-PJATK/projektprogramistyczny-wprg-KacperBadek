@@ -33,25 +33,37 @@ if (isset($_POST['register'])) {
     else if (empty($haslo)) echo "<br>Hasło nie może być puste!";
 
     else {
-        $db = new mysqli('localhost', 'root', '', 'sklep');
-        if ($db->connect_errno) {
-            die("Błąd połączenia z bazą danych!");
+        try {
+            $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $query = "SELECT email FROM uzytkownicy WHERE email = :email";
+            $result = $db->prepare($query);
+            $result->bindParam(':email', $email);
+            $result->execute();
+
+            if ($result->rowCount() > 0) {
+                die("Podany e-mail jest już w użyciu!");
+            }
+
+            $hash = password_hash($haslo, PASSWORD_DEFAULT);
+
+            $query = "INSERT INTO uzytkownicy (imie, nazwisko, email, hash_haslo, rodzaj_klienta) VALUES (:imie, :nazwisko, :email, :hash, 'klient')";
+
+            $result = $db->prepare($query);
+            $result->bindParam(':imie', $imie);
+            $result->bindParam(':nazwisko', $nazwisko);
+            $result->bindParam(':email', $email);
+            $result->bindParam(':hash', $hash);
+
+            if ($result->execute()) {
+                echo "<br>Zarejestrowano!";
+            } else echo printf("Błąd: %s<br>", $result->errorInfo()[2]);
+
+            $db = null;
+        } catch (PDOException $e) {
+            die("Błąd połączenia z bazą danych: " . $e->getMessage());
         }
-        $query = "SELECT email FROM `uzytkownicy` WHERE email LIKE '$email'";
-
-        if ($db->query($query)->num_rows > 0) {
-            die("Podany e-mail jest już w użyciu!");
-        }
-
-        $hash = password_hash($haslo, PASSWORD_DEFAULT);
-
-        $query = "INSERT INTO uzytkownicy (imie, nazwisko, email, hash_haslo, rodzaj_klienta) VALUES ('$imie', '$nazwisko', '$email', '$hash', 'klient')";
-
-        if ($db->query($query)) {
-            echo "<br>Zarejestrowano!";
-        } else echo printf("Błąd: %s<br />", $db->error);
-
-        $db->close();
     }
 }
 ?>

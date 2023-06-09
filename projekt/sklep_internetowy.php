@@ -23,14 +23,14 @@ session_start();
     <div id="login">
         <?php
         echo "<form method='post'>";
-        if(isset($_SESSION['loggedIn'])){
+        if (isset($_SESSION['loggedIn'])) {
             echo "<input type='submit' name='logoff' value='Wyloguj się'>";
-        } else{
+        } else {
             echo "<a href='logowanie.php'>Zaloguj się</a>";
         }
         echo "</form>";
 
-        if(isset($_POST['logoff'])){
+        if (isset($_POST['logoff'])) {
             unset($_SESSION['loggedIn']);
             unset($_SESSION['userId']);
             header("Refresh:0");
@@ -64,29 +64,29 @@ session_start();
 
         <?php
 
-        $db = new mysqli('localhost', 'root', '', 'sklep');
-        if ($db->connect_errno) {
-            die("Błąd połączenia z bazą danych!");
-        }
+        try {
+            $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $query = "SELECT id_produkt, nazwa, cena, opis, zdjecie FROM produkty";
-        $result = $db->query($query);
+            $query = "SELECT id_produkt, nazwa, cena, opis, zdjecie FROM produkty";
+            $result = $db->query($query);
 
-        if (!$result) {
-            die("Błąd zapytania: " . $db->error);
-        }
-
-        echo "<ul>";
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                echo '<a href="sklep_produkt.php?id=' . $row['id_produkt'] . '">' . $row["nazwa"] . '</a> ' . $row["cena"] . 'zł<br>';
+            if (!$result) {
+                die("Błąd zapytania: " . $db->errorInfo()[2]);
             }
-        } else echo "0 results";
-        echo "</ul>";
-        $db->close();
 
+            echo "<ul>";
+            if ($result->rowCount() > 0) {
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<a href="sklep_produkt.php?id=' . $row['id_produkt'] . '">' . $row["nazwa"] . '</a> ' . $row["cena"] . 'zł<br>';
+                }
+            } else echo "0 results";
+            echo "</ul>";
+            $db = null;
+        } catch (PDOException $e) {
+            die("Błąd połączenia z bazą danych: " . $e->getMessage());
+        }
         ?>
-
     </div>
 </div>
 

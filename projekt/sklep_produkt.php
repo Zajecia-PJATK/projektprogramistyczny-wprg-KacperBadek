@@ -13,21 +13,18 @@ else echo "Invalid product ID";
 <body>
 
 <?php
-$db = new mysqli('localhost', 'root', '', 'sklep');
-if ($db->connect_errno) {
-    die("Błąd połączenia z bazą danych!");
-}
 
-$queryOpinion = "SELECT id_produkt, nazwa, cena, opis, zdjecie FROM produkty WHERE id_produkt = '$id'";
-$resultOpinion = $db->query($queryOpinion);
+try{
+$db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-if (!$resultOpinion) {
-    die("Błąd zapytania: " . $db->error);
-}
+$queryOpinion = "SELECT id_produkt, nazwa, cena, opis, zdjecie FROM produkty WHERE id_produkt = :id";
+$resultOpinion = $db->prepare($queryOpinion);
+$resultOpinion->bindParam(':id', $id);
+$resultOpinion->execute();
 
-if ($resultOpinion->num_rows > 0) {
-while ($rowOpinion = $resultOpinion->fetch_assoc()) {
-
+if ($resultOpinion->rowCount() > 0) {
+while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
 ?>
 
 <div>
@@ -43,7 +40,10 @@ while ($rowOpinion = $resultOpinion->fetch_assoc()) {
         echo $rowOpinion['opis'];
         }
         } else echo "0 results";
-        $db->close();
+        $db = null;
+        } catch (PDOException $e) {
+            die("Błąd połączenia z bazą danych: " . $e->getMessage());
+        }
         ?>
         <br><br><br>
         <form method="post">
@@ -57,7 +57,7 @@ while ($rowOpinion = $resultOpinion->fetch_assoc()) {
 <?php
 echo "<div style='clear: both'>";
 if (!isset($_SESSION['loggedIn'])) {
-    echo "Zaloguj się, aby móc dodawać opinie!";
+    echo "<a href='logowanie.php'>Zaloguj się</a>" . ", aby móc dodawać opinie!";
 } else {
     echo '
     <fieldset>
@@ -78,24 +78,34 @@ if (!isset($_SESSION['loggedIn'])) {
 echo "</div>";
 
 if (isset($_POST['opinionButton'])) {
-    $stars = intval($_POST['rating']);
-    $today = date("Y/m/d");
-    $opinion = $_POST['opinion'];
-    if (isset($_SESSION['userId'])) $user = $_SESSION['userId'];
-    else die("Error");
 
-    $db = new mysqli('localhost', 'root', '', 'sklep');
-    if ($db->connect_errno) {
-        die("Błąd połączenia z bazą danych!");
+    try {
+        $stars = intval($_POST['rating']);
+        $today = date("Y/m/d");
+        $opinion = $_POST['opinion'];
+        if (isset($_SESSION['userId'])) $user = $_SESSION['userId'];
+        else die("Error");
+
+        $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $queryAddOpinion = "INSERT INTO opinie (id_produkt, id_uzytkownik, opinia, liczba_gwiazdek, data_wystawienia_opinii) VALUES (:id, :user, :opinion, :stars, '$today')";
+        $resultAddOpinion = $db->prepare($queryAddOpinion);
+        $resultAddOpinion->bindParam(':id', $id);
+        $resultAddOpinion->bindParam(':user', $user);
+        $resultAddOpinion->bindParam(':opinion', $opinion);
+        $resultAddOpinion->bindParam(':stars', $stars);
+
+        if ($resultAddOpinion->execute()) {
+            echo "<br>Dodano opinię!";
+        } else {
+            echo "Błąd: " . $resultAddOpinion->errorInfo()[2];
+        }
+
+        $db = null;
+    } catch (PDOException $e) {
+        die("Pojebie mnie Błąd połączenia z bazą danych: " . $e->getMessage());
     }
-
-    $queryOpinion = "INSERT INTO opinie(`id_produkt`, `id_uzytkownik`, `opinia`, `liczba_gwiazdek`, `data_wystawienia_opinii`) VALUES('$id', '$user', '$opinion', '$stars', '$today')";
-
-    if ($db->query($queryOpinion)) {
-        echo "<br>Dodano opinię!";
-    } else echo printf("Błąd: %s<br />", $db->error);
-
-    $db->close();
 }
 ?>
 
@@ -104,50 +114,60 @@ if (isset($_POST['opinionButton'])) {
 
     <?php
     echo "<div>";
-    $db = new mysqli('localhost', 'root', '', 'sklep');
-    if ($db->connect_errno) {
-        die("Błąd połączenia z bazą danych!");
-    }
 
-    $queryAverage = "SELECT AVG(`liczba_gwiazdek`) AS 'srednia' FROM `opinie` WHERE `id_produkt` = '$id'";
-    $resultAverage = $db->query($queryAverage);
-
-    if($resultAverage->num_rows > 0){
-        $rowAverage = $resultAverage->fetch_assoc();
-        echo "<h3>Średnia ocena produktu: " . round($rowAverage['srednia'], 2) . "</h3>";
-    }
-    echo "</div>";
+    try {
+        $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
-    $queryOpinion = "SELECT `liczba_gwiazdek`, `opinia`, `id_uzytkownik`, `data_wystawienia_opinii` FROM `opinie` WHERE `id_produkt` = '$id'";
-    $resultOpinion = $db->query($queryOpinion);
+        $queryAverage = "SELECT AVG(liczba_gwiazdek) AS srednia FROM opinie WHERE id_produkt = :id";
+        $resultAverage = $db->prepare($queryAverage);
+        $resultAverage->bindParam(':id', $id);
+        $resultAverage->execute();
 
-    echo "<div>";
-    echo "<ul style='list-style: none';>";
-    if ($resultOpinion->num_rows > 0) {
-        while ($rowOpinion = $resultOpinion->fetch_assoc()) {
-            echo "<li>";
-            $user = $rowOpinion['id_uzytkownik'];
-            $queryName = "SELECT `imie` FROM `uzytkownicy` WHERE `id_uzytkownik` = '$user'";
-            $resultName = $db->query($queryName);
-
-            if (!$resultName) {
-                die("Błąd zapytania: " . $db->error);
-            }
-            $rowName = $resultName->fetch_assoc();
-
-            echo "Użytkownik: " . $rowName['imie'];
-            echo "&nbsp&nbspData:" . $rowOpinion['data_wystawienia_opinii'] . "<br>";
-            echo "Ocena: " . $rowOpinion['liczba_gwiazdek'] . "<br>";
-            echo "Opinia: " . $rowOpinion['opinia'];
-            echo "<li>";
-            echo "<div>";
+        if ($resultAverage->rowCount() > 0) {
+            $rowAverage = $resultAverage->fetch(PDO::FETCH_ASSOC);
+            echo "<h3>Średnia ocena produktu: " . round($rowAverage['srednia'], 2) . "</h3>";
         }
-    } else echo "Brak opinii";
+        echo "</div>";
 
 
-    echo "</ul>";
-    $db->close();
+        $queryOpinion = "SELECT liczba_gwiazdek, opinia, id_uzytkownik, data_wystawienia_opinii FROM opinie WHERE id_produkt = :id";
+        $resultOpinion = $db->prepare($queryOpinion);
+        $resultOpinion->bindParam(':id', $id);
+        $resultOpinion->execute();
+
+
+        echo "<div>";
+        echo "<ul style='list-style: none'>";
+        if ($resultOpinion->rowCount() > 0) {
+            while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
+                echo "<li>";
+                $user = $rowOpinion['id_uzytkownik'];
+                $queryName = "SELECT imie FROM uzytkownicy WHERE id_uzytkownik = :user";
+                $resultName = $db->prepare($queryName);
+                $resultName->bindParam(':user', $user);
+                $resultName->execute();
+
+                if (!$resultName) {
+                    die("Błąd zapytania: " . $db->errorInfo()[2]);
+                }
+                $rowName = $resultName->fetch(PDO::FETCH_ASSOC);
+
+                echo "Użytkownik: " . $rowName['imie'];
+                echo "&nbsp&nbspData:" . $rowOpinion['data_wystawienia_opinii'] . "<br>";
+                echo "Ocena: " . $rowOpinion['liczba_gwiazdek'] . "<br>";
+                echo "Opinia: " . $rowOpinion['opinia'];
+                echo "<li>";
+            }
+        } else echo "Brak opinii";
+
+        echo "</ul>";
+        echo "</div>";
+        $db = null;
+    } catch (PDOException $e) {
+        die("Błąd połączenia z bazą danych: " . $e->getMessage());
+    }
     ?>
 </div>
 
