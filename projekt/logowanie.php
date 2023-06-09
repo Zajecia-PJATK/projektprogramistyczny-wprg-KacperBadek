@@ -10,7 +10,7 @@ session_start();
 <h2>Logowanie</h2>
 <form method="post">
     E-mail: <input type="email" name="email"><br><br>
-    Hasło: <input type="text" name="haslo"><br><br>
+    Hasło: <input type="password" name="haslo"><br><br>
     <button type="submit" name="login">Zaloguj</button>
 </form>
 <br>
@@ -39,7 +39,7 @@ if (isset($_POST['login'])) {
             while ($row = $result->fetch_assoc()) {
                 if (password_verify($haslo, $row['hash_haslo'])) {
 
-                    setcookie("loggedin", true, time() + 3600);
+                    $_SESSION['loggedIn'] = true;
                     $_SESSION['userId'] = $row['id_uzytkownik'];
                     header('Location: sklep_internetowy.php');
 
@@ -49,7 +49,6 @@ if (isset($_POST['login'])) {
         $db->close();
 
     }
-
 }
 
 ?>
