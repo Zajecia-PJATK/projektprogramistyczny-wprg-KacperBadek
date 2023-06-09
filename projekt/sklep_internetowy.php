@@ -21,7 +21,22 @@ session_start();
     </div>
 
     <div id="login">
-        <a href="logowanie.php">Zaloguj się</a>
+        <?php
+        echo "<form method='post'>";
+        if(isset($_SESSION['loggedIn'])){
+            echo "<input type='submit' name='logoff' value='Wyloguj się'>";
+        } else{
+            echo "<a href='logowanie.php'>Zaloguj się</a>";
+        }
+        echo "</form>";
+
+        if(isset($_POST['logoff'])){
+            unset($_SESSION['loggedIn']);
+            unset($_SESSION['userId']);
+            header("Refresh:0");
+        }
+
+        ?>
     </div>
 
     <div id="rejestracja">
