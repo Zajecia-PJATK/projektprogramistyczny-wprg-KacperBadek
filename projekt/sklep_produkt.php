@@ -1,4 +1,5 @@
 <?php
+include 'ProduktKoszyk.php';
 session_start();
 if (isset($_GET['id'])) $id = $_GET['id'];
 else echo "Invalid product ID";
@@ -12,8 +13,8 @@ else echo "Invalid product ID";
 </head>
 <body>
 
+<!--OPIS PRODUKTU-->
 <?php
-
 try{
 $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -46,14 +47,65 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
         }
         ?>
         <br><br><br>
+        <!--ILOŚĆ SZTUK PRODUKTU W MAGAZYNIE-->
         <form method="post">
+            Ilość: <input type="number" name="ilosc" min="1" value="1" style="width: 40%">
+            <?php
+            try {
+                $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                $queryWarehouse = "SELECT stan_magazynu FROM produkty WHERE id_produkt = :id";
+                $resultWarehouse = $db->prepare($queryWarehouse);
+                $resultWarehouse->bindParam(':id', $id);
+                $resultWarehouse->execute();
+
+                if ($resultWarehouse->rowCount() > 0) {
+                    $rowWarehouse = $resultWarehouse->fetch(PDO::FETCH_ASSOC);
+                    echo "z " . $rowWarehouse['stan_magazynu'] . " sztuk";
+                } else echo "Błąd";
+                $db = null;
+            } catch (PDOException $e) {
+                die("Błąd połączenia z bazą danych: " . $e->getMessage());
+            }
+            ?>
+            <br><br>
             <button type="submit" name="addBusket">DODAJ DO KOSZYKA</button>
             <button type="submit" name="buyButton">KUP I ZAPŁAĆ</button>
         </form>
 
+        <!--DODANIE PRODUKTÓW DO KOSZYKA-->
+        <?php
+        $existingIndex = -1;
+
+        if (isset($_POST['addBusket'])) {
+            $obj = new ProduktKoszyk($id, $_POST['ilosc']);
+
+            foreach ($_SESSION['koszyk'] as $index => $value) {
+                if ($obj->id === $value->id) {
+                    $existingIndex = $index;
+                    break;
+                }
+            }
+
+            if ($existingIndex !== -1) {
+                $_SESSION['koszyk'][$existingIndex]->increaseQuantity($obj->quantity);
+            } else {
+                $_SESSION['koszyk'][] = $obj;
+            }
+
+        }
+
+        if (isset($_POST['buyButton'])) {
+
+        }
+
+        ?>
+
     </div>
 </div>
 
+<!--FORMULARZ DODANIA OPINII DO PRODUKTU-->
 <?php
 echo "<div style='clear: both'>";
 if (!isset($_SESSION['loggedIn'])) {
@@ -109,6 +161,7 @@ if (isset($_POST['opinionButton'])) {
 }
 ?>
 
+<!--LISTA WSZYSTKICH OPINII PRODUKTU-->
 <div>
     <h2>Opinie produktu</h2>
 

@@ -1,9 +1,9 @@
 <?php
 
 trait Amount{
-    public function increaseQuantity()
+    public function increaseQuantity($quantity)
     {
-        $this->quantity += 1;
+        $this->quantity += $quantity;
     }
 
     public function decreaseQuantity()
@@ -19,11 +19,11 @@ class ProduktKoszyk
     private $id;
     private $quantity;
 
-    public function __construct($id)
+    public function __construct($id, $quantity)
     {
-        if (is_numeric($id)) {
+        if (is_numeric($id) && is_numeric($quantity) && $id > 0 && $quantity > 0) {
             $this->id = $id;
-            $this->quantity = 1;
+            $this->quantity = $quantity;
         }
     }
 
