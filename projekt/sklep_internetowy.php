@@ -1,4 +1,5 @@
 <?php
+include 'ProduktKoszyk.php';
 session_start();
 ?>
 <!DOCTYPE html>
@@ -48,7 +49,12 @@ session_start();
         if (!isset($_SESSION['koszyk'])) {
             $_SESSION['koszyk'] = [];
         }
-        echo "<a href='koszyk.php'>Koszyk:" . count($_SESSION['koszyk']) . " produktów</a>"
+
+        $basketCount = 0;
+        foreach ($_SESSION['koszyk'] as $item) {
+            $basketCount += $item->quantity;
+        }
+        echo "<a href='koszyk.php'>Koszyk:" . $basketCount . " produktów</a>"
         ?>
     </div>
 

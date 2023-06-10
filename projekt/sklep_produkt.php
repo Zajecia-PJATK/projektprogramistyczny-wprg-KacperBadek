@@ -49,7 +49,6 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
         <br><br><br>
         <!--ILOŚĆ SZTUK PRODUKTU W MAGAZYNIE-->
         <form method="post">
-            Ilość: <input type="number" name="ilosc" min="1" value="1" style="width: 40%">
             <?php
             try {
                 $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
@@ -62,13 +61,15 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
 
                 if ($resultWarehouse->rowCount() > 0) {
                     $rowWarehouse = $resultWarehouse->fetch(PDO::FETCH_ASSOC);
-                    echo "z " . $rowWarehouse['stan_magazynu'] . " sztuk";
-                } else echo "Błąd";
+                    $warehouseState = $rowWarehouse['stan_magazynu'];
+                } else $warehouseState = 0;
                 $db = null;
             } catch (PDOException $e) {
                 die("Błąd połączenia z bazą danych: " . $e->getMessage());
             }
             ?>
+            Ilość: <input type="number" name="ilosc" min="1" value="1" max="<?php echo $warehouseState;?>" style="width: 40%">
+            <?php echo "z " . $warehouseState . " sztuk"; ?>
             <br><br>
             <button type="submit" name="addBusket">DODAJ DO KOSZYKA</button>
             <button type="submit" name="buyButton">KUP I ZAPŁAĆ</button>
@@ -78,7 +79,7 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
         <?php
         $existingIndex = -1;
 
-        if (isset($_POST['addBusket'])) {
+        if (isset($_POST['addBusket']) && is_numeric($_POST['ilosc']) && $_POST['ilosc'] <= $warehouseState) {
             $obj = new ProduktKoszyk($id, $_POST['ilosc']);
 
             foreach ($_SESSION['koszyk'] as $index => $value) {
@@ -96,7 +97,7 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
 
         }
 
-        if (isset($_POST['buyButton'])) {
+        if (isset($_POST['buyButton']) && is_numeric($_POST['ilosc']) && $_POST['ilosc'] <= $warehouseState) {
 
         }
 
