@@ -12,7 +12,7 @@ session_start();
 <h2>Produkty w koszyku</h2>
 
 <div>
-    <ul>
+    <ul style="list-style: none">
         <form method="post">
             <?php
 
@@ -35,10 +35,12 @@ session_start();
                         if ($result->rowCount() > 0) {
                             $row = $result->fetch(PDO::FETCH_ASSOC);
                             echo "<div>";
+                            echo "<li>";
                             echo $row['nazwa'];
                             echo " Ilość: " . $item->quantity;
                             echo " Cena: " . $row['cena'] * $item->quantity . "zł<br>";
                             echo "<button name='action[$index]'>Usuń</button>";
+                            echo "</li>";
                             echo "</div>";
                             $price += $row['cena'] * $item->quantity;
                         }
@@ -48,8 +50,8 @@ session_start();
                 } catch (PDOException $e) {
                     die("Błąd połączenia z bazą danych: " . $e->getMessage());
                 }
-                echo "Wspólna wartość produktów: " . $price . "zł ";
-                echo "<button name='payment'>PŁATNOŚĆ</button>";
+                echo "Wspólna wartość produktów: <b>" . $price . "zł</b> ";
+                echo "<button type='submit' name='payment'>PŁATNOŚĆ</button>";
             }
 
             ?>
@@ -63,6 +65,10 @@ if (isset($_POST['action'])) {
         array_splice($_SESSION['koszyk'], $index, 1);
     }
     header("Refresh:0");
+}
+
+if(isset($_POST['payment'])){
+    header('Location: zamowienie.php');
 }
 ?>
 
