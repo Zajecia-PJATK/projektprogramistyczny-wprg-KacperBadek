@@ -98,7 +98,10 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
         }
 
         if (isset($_POST['buyButton']) && is_numeric($_POST['ilosc']) && $_POST['ilosc'] <= $warehouseState) {
-
+            $obj = new ProduktKoszyk($id, $_POST['ilosc']);
+            $_SESSION['koszyk'] = [];
+            $_SESSION['koszyk'][] = $obj;
+            header('Location: zamowienie.php');
         }
 
         ?>
