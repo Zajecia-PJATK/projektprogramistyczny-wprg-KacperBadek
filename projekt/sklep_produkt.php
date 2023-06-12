@@ -93,7 +93,7 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
             } else {
                 $_SESSION['koszyk'][] = $obj;
             }
-
+            header('Refresh: 0');
         }
 
         if (isset($_POST['buyButton']) && is_numeric($_POST['ilosc']) && $_POST['ilosc'] <= $warehouseState) {
@@ -174,7 +174,6 @@ if (isset($_POST['opinionButton'])) {
     try {
         $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 
         $queryAverage = "SELECT AVG(liczba_gwiazdek) AS srednia FROM opinie WHERE id_produkt = :id";
         $resultAverage = $db->prepare($queryAverage);

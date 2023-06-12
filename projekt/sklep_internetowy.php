@@ -3,25 +3,17 @@ include "header.php";
 ?>
 
 <div id="srodek">
-    <div id="srodek-lewo">
-        <h2>Filtry</h2>
-    </div>
 
     <div id="lista">
         <h2>Nasze produkty</h2>
 
         <?php
-
         try {
             $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $query = "SELECT id_produkt, nazwa, cena, opis, zdjecie FROM produkty";
             $result = $db->query($query);
-
-            if (!$result) {
-                die("Błąd zapytania: " . $db->errorInfo()[2]);
-            }
 
             echo "<ul>";
             if ($result->rowCount() > 0) {

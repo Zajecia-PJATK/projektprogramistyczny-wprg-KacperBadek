@@ -12,12 +12,45 @@ session_start();
 
 <div id="gora">
     <div id="logo">
-
+        <a href="sklep_internetowy.php">Strona główna</a>
     </div>
 
     <div id="szukaj">
-        <input type="text" placeholder="czego szukasz?">
-        <input type="button" value="szukaj">
+        <form method="post">
+            <input type="text" placeholder="czego szukasz?" name="searchBar">
+            <select name="kategorie">
+                <option value="0" selected>Kategorie</option>
+                <?php
+                try {
+                    $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+                    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                    $query = "SELECT id_kategoria, nazwa_kategoria FROM kategorie";
+                    $result = $db->query($query);
+
+                    if ($result->rowCount() > 0) {
+                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                            $value = $row['id_kategoria'];
+                            echo "<option value='$value'>" . $row['nazwa_kategoria'] . "</option>";
+                        }
+                    }
+                    $db = null;
+                } catch (PDOException $e) {
+                    die("Błąd połączenia z bazą danych: " . $e->getMessage());
+                }
+                ?>
+            </select>
+            <button type="submit" name="search">Szukaj</button>
+        </form>
+
+        <?php
+        if (isset($_POST['search'])) {
+            $_SESSION['szukanyProdukt'] = $_POST['searchBar'];
+            $_SESSION['kategoria'] = $_POST['kategorie'];
+            header('Location: szukaj_produkt.php');
+        }
+        ?>
+
     </div>
 
     <div id="login">
