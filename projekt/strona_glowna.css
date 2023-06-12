@@ -1,0 +1,11 @@
+#gora {
+    text-align: center; /* Center the divs horizontally */
+    margin-bottom: 15px;
+    background-color: cornflowerblue;
+    padding: 10px;
+}
+#gora > div {
+    display: inline-block; /* Display the divs in one line */
+    margin-right: 10px; /* Add spacing between the divs */
+    vertical-align: middle; /* Align the divs vertically in the middle */
+}

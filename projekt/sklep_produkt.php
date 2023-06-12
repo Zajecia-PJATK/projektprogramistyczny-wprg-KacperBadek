@@ -1,6 +1,5 @@
 <?php
-include 'ProduktKoszyk.php';
-session_start();
+include "header.php";
 if (isset($_GET['id'])) $id = $_GET['id'];
 else echo "Invalid product ID";
 ?>
