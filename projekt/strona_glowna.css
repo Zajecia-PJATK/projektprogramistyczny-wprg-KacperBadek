@@ -9,3 +9,41 @@
     margin-right: 10px; /* Add spacing between the divs */
     vertical-align: middle; /* Align the divs vertically in the middle */
 }
+
+#srodek{
+    text-align: center;
+}
+
+#lista {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#product{
+    border: black 3px solid;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 10px; /* Add some spacing between the items */
+    margin-right: 10px;
+    margin-bottom: 10px;
+    min-width: 460px;
+}
+
+#product image{
+    float: left;
+    margin-right: 5px;
+}
+
+#product .product-info{
+    display: flex;
+    flex-direction: column;
+}
+footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}

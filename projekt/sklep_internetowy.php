@@ -3,9 +3,9 @@ include "header.php";
 ?>
 
 <div id="srodek">
+    <h2>Nasze produkty</h2>
 
     <div id="lista">
-        <h2>Nasze produkty</h2>
 
         <?php
         try {
@@ -15,13 +15,19 @@ include "header.php";
             $query = "SELECT id_produkt, nazwa, cena, opis, zdjecie FROM produkty";
             $result = $db->query($query);
 
-            echo "<ul>";
+            //echo "<ul>";
             if ($result->rowCount() > 0) {
                 while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                    echo '<a href="sklep_produkt.php?id=' . $row['id_produkt'] . '">' . $row["nazwa"] . '</a> ' . $row["cena"] . 'zł<br>';
+                    echo "<div id='product'>";
+                    echo '<img src="zdjecia_produktow/' . $row['zdjecie'] . '" alt="Product Image" width = "200" height = "200">';
+                    echo "<div class='product-info'>";
+                    echo '<a href="sklep_produkt.php?id=' . $row['id_produkt'] . '">' . $row["nazwa"] . '</a><br>';
+                    echo $row["cena"] . "zł";
+                    echo "</div>";
+                    echo "</div>";
                 }
             } else echo "0 results";
-            echo "</ul>";
+            // echo "</ul>";
             $db = null;
         } catch (PDOException $e) {
             die("Błąd połączenia z bazą danych: " . $e->getMessage());
@@ -30,7 +36,7 @@ include "header.php";
     </div>
 </div>
 
-<footer id="footer">
+<footer>
     <h3>All rights reserved by ©me</h3>
 </footer>
 

@@ -50,7 +50,12 @@ include "header.php";
                     die("Błąd połączenia z bazą danych: " . $e->getMessage());
                 }
                 echo "Wspólna wartość produktów: <b>" . $price . "zł</b> ";
-                echo "<button type='submit' name='payment'>PŁATNOŚĆ</button>";
+                if($_SESSION['loggedIn']){
+                    echo "<br><br><button type='submit' name='payment'>PŁATNOŚĆ</button>";
+                } else{
+                    echo "<br><a href='logowanie.php'>Zaloguj się</a>" . ", aby zamówić!";
+                }
+
             }
 
             ?>

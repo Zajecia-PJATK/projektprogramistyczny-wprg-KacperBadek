@@ -89,7 +89,7 @@ session_start();
 $kod_regex = '/\d{2}-\d{3}/';
 $telefon_regex = '/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/';
 
-if (isset($_POST['zamow']) && !empty($_SESSION['koszyk'])) {
+if (isset($_POST['zamow']) && !empty($_SESSION['koszyk']) && $_SESSION['loggedIn']) {
 
     $mieszkanie = $_POST['mieszkanie'];
     if (empty($mieszkanie)) $mieszkanie = null;
@@ -189,6 +189,7 @@ if (isset($_POST['zamow']) && !empty($_SESSION['koszyk'])) {
         $headers .= 'From: ' . $from . "\r\n";
 
         mail($email, $subject, $msg, $headers);
+        $_SESSION['purchase'] = true;
         header('Location: zamowienie_potwierdzenie.php');
     }
 }

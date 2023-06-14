@@ -1,6 +1,7 @@
 <?php
 include 'ProduktKoszyk.php';
 session_start();
+$_SESSION['purchase'] = false;
 ?>
 <!DOCTYPE html>
 <html>
@@ -86,7 +87,7 @@ session_start();
         foreach ($_SESSION['koszyk'] as $item) {
             $basketCount += $item->quantity;
         }
-        echo "<a href='koszyk.php'>Koszyk:" . $basketCount . " produktów</a>"
+        echo "<a href='koszyk.php'>Koszyk: " . $basketCount . "</a>"
         ?>
     </div>
 
