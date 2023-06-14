@@ -89,4 +89,28 @@ session_start();
         echo "<a href='koszyk.php'>Koszyk:" . $basketCount . " produktów</a>"
         ?>
     </div>
+
+    <div id="admin" style="float: right">
+        <?php
+        try {
+            $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $query = "SELECT rodzaj_klienta FROM uzytkownicy WHERE id_uzytkownik = :id";
+            $result = $db->prepare($query);
+            $result->bindParam(':id', $_SESSION['userId']);
+            $result->execute();
+
+            if ($result->rowCount() > 0) {
+                $row = $result->fetch(PDO::FETCH_ASSOC);
+                if ($row['rodzaj_klienta'] == "admin") {
+                    echo "<a href='admin.php'>Panel administracyjny</a>";
+                }
+            }
+            $db = null;
+        } catch (PDOException $e) {
+            die("Błąd połączenia z bazą danych: " . $e->getMessage());
+        }
+        ?>
+    </div>
 </div>

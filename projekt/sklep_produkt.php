@@ -67,7 +67,8 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
                 die("Błąd połączenia z bazą danych: " . $e->getMessage());
             }
             ?>
-            Ilość: <input type="number" name="ilosc" min="1" value="1" max="<?php echo $warehouseState;?>" style="width: 40%">
+            Ilość: <input type="number" name="ilosc" min="1" value="1" max="<?php echo $warehouseState; ?>"
+                          style="width: 40%">
             <?php echo "z " . $warehouseState . " sztuk"; ?>
             <br><br>
             <button type="submit" name="addBusket">DODAJ DO KOSZYKA</button>
@@ -134,33 +135,35 @@ echo "</div>";
 
 if (isset($_POST['opinionButton'])) {
 
-    try {
-        $stars = intval($_POST['rating']);
-        $today = date("Y/m/d");
-        $opinion = $_POST['opinion'];
-        if (isset($_SESSION['userId'])) $user = $_SESSION['userId'];
-        else die("Error");
+    if (!empty($_POST['rating']) && is_numeric($_POST['rating']) && !empty($_POST['opinion'])) {
+        try {
+            $stars = intval($_POST['rating']);
+            $today = date("Y/m/d");
+            $opinion = $_POST['opinion'];
+            if (isset($_SESSION['userId'])) $user = $_SESSION['userId'];
+            else die("Error");
 
-        $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $db = new PDO("mysql:host=localhost;dbname=sklep", 'root', '');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $queryAddOpinion = "INSERT INTO opinie (id_produkt, id_uzytkownik, opinia, liczba_gwiazdek, data_wystawienia_opinii) VALUES (:id, :user, :opinion, :stars, '$today')";
-        $resultAddOpinion = $db->prepare($queryAddOpinion);
-        $resultAddOpinion->bindParam(':id', $id);
-        $resultAddOpinion->bindParam(':user', $user);
-        $resultAddOpinion->bindParam(':opinion', $opinion);
-        $resultAddOpinion->bindParam(':stars', $stars);
+            $queryAddOpinion = "INSERT INTO opinie (id_produkt, id_uzytkownik, opinia, liczba_gwiazdek, data_wystawienia_opinii) VALUES (:id, :user, :opinion, :stars, '$today')";
+            $resultAddOpinion = $db->prepare($queryAddOpinion);
+            $resultAddOpinion->bindParam(':id', $id);
+            $resultAddOpinion->bindParam(':user', $user);
+            $resultAddOpinion->bindParam(':opinion', $opinion);
+            $resultAddOpinion->bindParam(':stars', $stars);
 
-        if ($resultAddOpinion->execute()) {
-            echo "<br>Dodano opinię!";
-        } else {
-            echo "Błąd: " . $resultAddOpinion->errorInfo()[2];
+            if ($resultAddOpinion->execute()) {
+                echo "<br>Dodano opinię!";
+            } else {
+                echo "Błąd: " . $resultAddOpinion->errorInfo()[2];
+            }
+
+            $db = null;
+        } catch (PDOException $e) {
+            die("Pojebie mnie Błąd połączenia z bazą danych: " . $e->getMessage());
         }
-
-        $db = null;
-    } catch (PDOException $e) {
-        die("Pojebie mnie Błąd połączenia z bazą danych: " . $e->getMessage());
-    }
+    } else echo "<br>Błędne dane!";
 }
 ?>
 
