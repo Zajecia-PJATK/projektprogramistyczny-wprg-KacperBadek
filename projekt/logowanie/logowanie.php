@@ -14,7 +14,7 @@ session_start();
     <button type="submit" name="login">Zaloguj</button>
 </form>
 <br>
-Nie masz konta? <a href="rejestracja.php">Zarejestruj się</a>
+Nie masz konta? <a href="../rejestracja/rejestracja.php">Zarejestruj się</a>
 
 <?php
 $email_regex = "/^[^.].(([a-zA-Z0-9\.\-\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~])(?!\.\.)){1,64}@{1}[a-zA-Z0-9\-]{1,255}\.[a-zA-Z]{2,3}(\.[a-zA-Z]{2,3})?$/";
@@ -44,7 +44,7 @@ if (isset($_POST['login'])) {
                     $_SESSION['loggedIn'] = true;
                     $_SESSION['userId'] = $row['id_uzytkownik'];
                     $db = null;
-                    header('Location: sklep_internetowy.php');
+                    header('Location: ../strona_glowna/sklep_internetowy.php');
                 } else {
                     echo "<br>Błędny login lub hasło!";
                 }

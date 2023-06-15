@@ -1,5 +1,5 @@
 <?php
-include 'ProduktKoszyk.php';
+include '../koszyk/ProduktKoszyk.php';
 session_start();
 $_SESSION['purchase'] = false;
 ?>
@@ -7,13 +7,13 @@ $_SESSION['purchase'] = false;
 <html>
 <head>
     <title>Sklep</title>
-    <link rel="stylesheet" href="strona_glowna.css">
+    <link rel="stylesheet" href="..\css\strona_glowna.css">
 </head>
 <body>
 
 <div id="gora">
     <div id="logo">
-        <a href="sklep_internetowy.php">Strona główna</a>
+        <a href="../strona_glowna/sklep_internetowy.php">Strona główna</a>
     </div>
 
     <div id="szukaj">
@@ -48,7 +48,7 @@ $_SESSION['purchase'] = false;
         if (isset($_POST['search'])) {
             $_SESSION['szukanyProdukt'] = $_POST['searchBar'];
             $_SESSION['kategoria'] = $_POST['kategorie'];
-            header('Location: szukaj_produkt.php');
+            header('Location: ../wyszukiwanie/szukaj_produkt.php');
         }
         ?>
 
@@ -60,7 +60,7 @@ $_SESSION['purchase'] = false;
         if (isset($_SESSION['loggedIn'])) {
             echo "<input type='submit' name='logoff' value='Wyloguj się'>";
         } else {
-            echo "<a href='logowanie.php'>Zaloguj się</a>";
+            echo "<a href='../logowanie/logowanie.php'>Zaloguj się</a>";
         }
         echo "</form>";
 
@@ -74,7 +74,7 @@ $_SESSION['purchase'] = false;
     </div>
 
     <div id="rejestracja">
-        <a href="rejestracja.php">Zarejestruj się</a>
+        <a href="../rejestracja/rejestracja.php">Zarejestruj się</a>
     </div>
 
     <div id="koszyk" style="float: left margin-right: 10px">
@@ -87,7 +87,7 @@ $_SESSION['purchase'] = false;
         foreach ($_SESSION['koszyk'] as $item) {
             $basketCount += $item->quantity;
         }
-        echo "<a href='koszyk.php'>Koszyk: " . $basketCount . "</a>"
+        echo "<a href='../koszyk/koszyk.php'>Koszyk: " . $basketCount . "</a>"
         ?>
     </div>
 
@@ -105,7 +105,7 @@ $_SESSION['purchase'] = false;
             if ($result->rowCount() > 0) {
                 $row = $result->fetch(PDO::FETCH_ASSOC);
                 if ($row['rodzaj_klienta'] == "admin") {
-                    echo "<a href='admin.php'>Panel administracyjny</a>";
+                    echo "<a href='../panel_administracyjny/admin.php' target='_blank'>Panel administracyjny</a>";
                 }
             }
             $db = null;

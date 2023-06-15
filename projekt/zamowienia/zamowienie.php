@@ -1,5 +1,5 @@
 <?php
-include 'ProduktKoszyk.php';
+include '../koszyk/ProduktKoszyk.php';
 session_start();
 ?>
 <!DOCTYPE html>
@@ -190,7 +190,7 @@ if (isset($_POST['zamow']) && !empty($_SESSION['koszyk']) && $_SESSION['loggedIn
 
         mail($email, $subject, $msg, $headers);
         $_SESSION['purchase'] = true;
-        header('Location: zamowienie_potwierdzenie.php');
+        header('Location: ../zamowienia/zamowienie_potwierdzenie.php');
     }
 }
 

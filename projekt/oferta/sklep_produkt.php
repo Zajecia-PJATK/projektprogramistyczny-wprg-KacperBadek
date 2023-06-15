@@ -1,5 +1,5 @@
 <?php
-include "header.php";
+include "../includy/header.php";
 if (isset($_GET['id'])) $id = $_GET['id'];
 else echo "Invalid product ID";
 ?>
@@ -30,7 +30,7 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
 <div>
     <div id="photo" style="float: left">
         <?php
-        echo '<img src="zdjecia_produktow/' . $rowOpinion['zdjecie'] . '" alt="Product Image">';
+        echo '<img src="../zdjecia_produktow/' . $rowOpinion['zdjecie'] . '" alt="Product Image">';
         ?>
     </div>
 
@@ -101,7 +101,7 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
             $obj = new ProduktKoszyk($id, $_POST['ilosc']);
             $_SESSION['koszyk'] = [];
             $_SESSION['koszyk'][] = $obj;
-            header('Location: zamowienie.php');
+            header('Location: ../zamowienia/zamowienie.php');
         }
 
         ?>
@@ -113,7 +113,7 @@ while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
 <?php
 echo "<div style='clear: both'>";
 if (!isset($_SESSION['loggedIn'])) {
-    echo "<a href='logowanie.php'>Zaloguj się</a>" . ", aby móc dodawać opinie!";
+    echo "<a href='../logowanie/logowanie.php'>Zaloguj się</a>" . ", aby móc dodawać opinie!";
 } else {
     echo '
     <fieldset>
@@ -161,7 +161,7 @@ if (isset($_POST['opinionButton'])) {
 
             $db = null;
         } catch (PDOException $e) {
-            die("Pojebie mnie Błąd połączenia z bazą danych: " . $e->getMessage());
+            die("Błąd połączenia z bazą danych: " . $e->getMessage());
         }
     } else echo "<br>Błędne dane!";
 }

@@ -68,6 +68,6 @@ if (isset($_POST['register'])) {
 }
 ?>
 
-Masz już konto? <a href="logowanie.php">Zaloguj się</a>
+Masz już konto? <a href="../logowanie/logowanie.php">Zaloguj się</a>
 </body>
 </html>

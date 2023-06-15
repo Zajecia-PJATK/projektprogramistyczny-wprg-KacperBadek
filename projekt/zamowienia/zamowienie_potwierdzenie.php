@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!$_SESSION['purchase']) {
-    header('Location: sklep_internetowy.php');
+    header('Location: ../strona_glowna/sklep_internetowy.php');
 }
 $_SESSION['koszyk'] = [];
 ?>
@@ -14,7 +14,7 @@ $_SESSION['koszyk'] = [];
 <div style="text-align: center">
     <h2>Dziękujemy za zakupy w naszym sklepie!</h2>
     <h3>Potwierdzenie zamówienia zostało wysłane na twój e-mail!</h3>
-    <a href="sklep_internetowy.php">Powrót na strone główną</a>
+    <a href="../strona_glowna/sklep_internetowy.php">Powrót na strone główną</a>
 </div>
 
 

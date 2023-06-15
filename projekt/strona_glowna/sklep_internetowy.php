@@ -1,5 +1,5 @@
 <?php
-include "header.php";
+include "../includy/header.php";
 ?>
 
 <div id="srodek">
@@ -19,9 +19,9 @@ include "header.php";
             if ($result->rowCount() > 0) {
                 while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                     echo "<div id='product'>";
-                    echo '<img src="zdjecia_produktow/' . $row['zdjecie'] . '" alt="Product Image" width = "200" height = "200">';
+                    echo '<img src="../zdjecia_produktow/' . $row['zdjecie'] . '" alt="Product Image" width = "200" height = "200">';
                     echo "<div class='product-info'>";
-                    echo '<a href="sklep_produkt.php?id=' . $row['id_produkt'] . '">' . $row["nazwa"] . '</a><br>';
+                    echo '<a href="../oferta/sklep_produkt.php?id=' . $row['id_produkt'] . '">' . $row["nazwa"] . '</a><br>';
                     echo $row["cena"] . "zł";
                     echo "</div>";
                     echo "</div>";

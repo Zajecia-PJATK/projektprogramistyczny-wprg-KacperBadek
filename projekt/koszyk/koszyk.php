@@ -1,5 +1,5 @@
 <?php
-include "header.php";
+include "../includy/header.php";
 ?>
 <!DOCTYPE html>
 <html>
@@ -53,7 +53,7 @@ include "header.php";
                 if($_SESSION['loggedIn']){
                     echo "<br><br><button type='submit' name='payment'>PŁATNOŚĆ</button>";
                 } else{
-                    echo "<br><a href='logowanie.php'>Zaloguj się</a>" . ", aby zamówić!";
+                    echo "<br><a href='../logowanie/logowanie.php'>Zaloguj się</a>" . ", aby zamówić!";
                 }
 
             }
@@ -72,7 +72,7 @@ if (isset($_POST['action'])) {
 }
 
 if(isset($_POST['payment'])){
-    header('Location: zamowienie.php');
+    header('Location: ../zamowienia/zamowienie.php');
 }
 ?>
 
