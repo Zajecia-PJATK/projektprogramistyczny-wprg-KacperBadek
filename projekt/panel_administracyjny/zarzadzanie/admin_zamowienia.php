@@ -8,6 +8,7 @@ session_start();
     <link rel="stylesheet" href="..\..\css\panel_administracyjny.css">
 </head>
 <body>
+<a href="../admin.php">Panel administracyjny</a>
 <h2>Zamówienia</h2>
 <form method="post">
     <?php
@@ -46,7 +47,7 @@ session_start();
                   <select name='stan[" . $row['id_zamowienia'] . "]'>
                   <option value='zrealizowane' selected>zrealizowane</option>
                   <option value='w_trakcie_realizacji'>w trakcie realizacji</option></select> 
-                  <button type='submit' name='action[" . $row['id_zamowienia'] . "]'>edytuj</button>
+                  <button type='submit' name='action[" . $row['id_zamowienia'] . "]'>Edytuj</button>
                   </td>";
 
                 echo "</tr>";
@@ -70,13 +71,15 @@ if (isset($_POST['action'])) {
 
         foreach ($_POST['action'] as $index => $action) {
 
-            $query = "UPDATE zamowienia SET stan_zamowienia = :stan WHERE id_zamowienia = :id";
-            $result = $db->prepare($query);
-            $result->bindParam(':stan', $_POST['stan'][$index]);
-            $result->bindParam(':id', $index);
+            if ($_POST['stan'][$index] == "zrealizowane" || $_POST['stan'][$index] == "w_trakcie_realizacji") {
+                $query = "UPDATE zamowienia SET stan_zamowienia = :stan WHERE id_zamowienia = :id";
+                $result = $db->prepare($query);
+                $result->bindParam(':stan', $_POST['stan'][$index]);
+                $result->bindParam(':id', $index);
 
-            if($result->execute()) echo "Edytowano!";
-            else echo "Błąd!";
+                if ($result->execute()) echo "Edytowano!";
+                else echo "Błąd!";
+            } else echo "Błędne dane!";
         }
         $db = null;
     } catch (PDOException $e) {

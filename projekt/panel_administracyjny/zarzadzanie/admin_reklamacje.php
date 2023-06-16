@@ -8,7 +8,7 @@ session_start();
     <link rel="stylesheet" href="..\..\css\panel_administracyjny.css">
 </head>
 <body>
-
+<a href="../admin.php">Panel administracyjny</a>
 <h2>Reklamacje</h2>
 <?php
 
