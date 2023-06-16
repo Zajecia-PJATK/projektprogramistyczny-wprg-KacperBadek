@@ -135,7 +135,7 @@ echo "</div>";
 
 if (isset($_POST['opinionButton'])) {
 
-    if (!empty($_POST['rating']) && is_numeric($_POST['rating']) && !empty($_POST['opinion'])) {
+    if (!empty($_POST['rating']) && is_numeric($_POST['rating']) && $_POST['rating'] > 0 && $_POST['rating'] < 6 && !empty($_POST['opinion'])) {
         try {
             $stars = intval($_POST['rating']);
             $today = date("Y/m/d");
