@@ -15,7 +15,6 @@ include "../includy/header.php";
             $query = "SELECT id_produkt, nazwa, cena, opis, zdjecie FROM produkty";
             $result = $db->query($query);
 
-            //echo "<ul>";
             if ($result->rowCount() > 0) {
                 while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                     echo "<div id='product'>";
@@ -27,7 +26,6 @@ include "../includy/header.php";
                     echo "</div>";
                 }
             } else echo "0 results";
-            // echo "</ul>";
             $db = null;
         } catch (PDOException $e) {
             die("Błąd połączenia z bazą danych: " . $e->getMessage());
