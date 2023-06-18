@@ -168,7 +168,7 @@ if (isset($_POST['opinionButton'])) {
 ?>
 
 <!--LISTA WSZYSTKICH OPINII PRODUKTU-->
-<div>
+<div id="opinie">
     <h2>Opinie produktu</h2>
 
     <?php
@@ -197,7 +197,7 @@ if (isset($_POST['opinionButton'])) {
 
 
         echo "<div>";
-        echo "<ul style='list-style: none'>";
+        echo "<ul>";
         if ($resultOpinion->rowCount() > 0) {
             while ($rowOpinion = $resultOpinion->fetch(PDO::FETCH_ASSOC)) {
                 echo "<li>";

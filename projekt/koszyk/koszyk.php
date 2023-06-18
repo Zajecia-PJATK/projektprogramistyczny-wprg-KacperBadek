@@ -11,7 +11,7 @@ include "../includy/header.php";
 <h2>Produkty w koszyku</h2>
 
 <div>
-    <ul style="list-style: none">
+    <ul>
         <form method="post">
             <?php
 
@@ -36,9 +36,11 @@ include "../includy/header.php";
                             echo "<div>";
                             echo "<li>";
                             echo $row['nazwa'];
-                            echo " Ilość: " . $item->quantity;
-                            echo " Cena: " . $row['cena'] * $item->quantity . "zł<br>";
+                            echo " Ilość: " . $item->quantity . "<br>";
+                            echo " Cena: " . $row['cena'] * $item->quantity . "zł";
+                            echo "<div id='delButton'>";
                             echo "<button name='action[$index]'>Usuń</button>";
+                            echo "</div>";
                             echo "</li>";
                             echo "</div>";
                             $price += $row['cena'] * $item->quantity;
