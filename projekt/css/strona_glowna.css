@@ -1,0 +1,60 @@
+#gora {
+    text-align: center;
+    margin-bottom: 15px;
+    background-color: cornflowerblue;
+    padding: 10px;
+}
+#gora > div {
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+#srodek{
+    text-align: center;
+}
+
+#lista {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#product{
+    border: black 3px solid;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    min-width: 460px;
+}
+
+#product image{
+    float: left;
+    margin-right: 5px;
+}
+
+#product .product-info{
+    display: flex;
+    flex-direction: column;
+}
+
+ul{
+    list-style: none;
+}
+
+li{
+    margin-bottom: 10px;
+    margin-right: 70%;
+
+}
+
+footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
